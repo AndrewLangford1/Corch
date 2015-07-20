@@ -4,11 +4,13 @@ source "http://rubygems.org/"
 # declare the sinatra framework dependency
 gem "sinatra" 
 
+gem "sinatra-cross_origin"
+
 #using rest client to make rest calls
 gem 'rest-client'
 
 #using json to reveive/return client requests
-gem 'json_pure'
+gem 'json'
 
 #using thin instead of webrick for the web server.
 gem 'thin'

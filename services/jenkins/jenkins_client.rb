@@ -8,7 +8,7 @@ module Jenkins
 		def initialize params
 			@jenkins_host = params[:jenkins_host]
 			@jenkins_port = params[:jenkins_port]
-			#todo authentication params
+			#@todo authentication params
 		end
 		#creates a new job 
 		#@param xml => the config.xml file for the job
