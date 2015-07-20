@@ -1,18 +1,23 @@
 require 'sinatra'
-require './services/jenkins/jenkins-client.rb'
+
+
+configure do 
+	set :jenkins_config,  {:jenkins_host => "localhost", :jenkins_port => "8080"}
+	
+end
+
 
 get '/' do 
-	client = Jenkins::Client.new
-	puts client.get_all_jobs
-	#jobs_list =  client.filter_jobs("HelloWorldContainer")
-	#puts jobs_list
-	#chain = client.chain_jobs jobs_list
-	#puts chain
-	#ret = client.trigger_build(chain)
-	#ret[:codes].each do |code|
-	#	puts code
-	#end
+	return "Cloud Orchestration Jenkins Automation (Wrapper)"	
 end
+
+###ROUTES
+require_relative './routes/git_pull_build/create_post.rb'
+require_relative './routes/jobs/get_all.rb'
+
+
+
+
 
 
 

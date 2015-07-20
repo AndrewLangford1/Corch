@@ -4,9 +4,6 @@ source "http://rubygems.org/"
 # declare the sinatra framework dependency
 gem "sinatra" 
 
-#wrapper for jenkins api
-gem 'jenkins_api_client'
-
 #using rest client to make rest calls
 gem 'rest-client'
 
