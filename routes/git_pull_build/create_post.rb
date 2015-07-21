@@ -17,6 +17,7 @@ post '/create_fs' do
 
 	#Begin git pull code and build
 	begin
+		#create jenkins client
 		jenkins = Jenkins::Client.new settings.jenkins_config
 		#create job
 		ret[:create_job_code] = jenkins.create_job config_xml, params["name"]
@@ -24,10 +25,11 @@ post '/create_fs' do
 		ret[:build_code] = jenkins.build_job params["name"]
 		#if we get here, op was successful
 		ret[:success] = true
+	#really basic error handling
 	rescue Exception => e
 		puts e
 		puts e.backtrace
 	end
-	
+	#return ret hash in json form
 	return ret.to_json
 end

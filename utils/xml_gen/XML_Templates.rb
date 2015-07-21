@@ -1,9 +1,14 @@
 ##Hack Class to 'generate' configuration xml for jenkins jobs.
 class XML_Templates
 
+	#@TODO
+	#base constructor
 	def initialize params
 		
 	end
+
+	#jenkins configuration XML Template to simply pull code from the specified URL
+	#@param the github url for the specified repo, only tested on HTTPS, SSH testing not supported as of yet. 
 	def self.git_pull_and_build git_url
 		xml = "<project>
 			   	<actions/>
@@ -39,4 +44,6 @@ class XML_Templates
 			   	</project>"
 		return xml
 	end
+
+
 end
