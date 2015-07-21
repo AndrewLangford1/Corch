@@ -10,7 +10,7 @@ gem "sinatra-cross_origin"
 gem 'rest-client'
 
 #using json to reveive/return client requests
-gem 'json'
+gem 'json_pure'
 
 #using thin instead of webrick for the web server.
 gem 'thin'

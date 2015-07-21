@@ -1,26 +1,30 @@
 require 'sinatra'
 require'sinatra/cross_origin'
+require 'yaml'
 
+#Config settings
 configure do 
-	set :jenkins_config,  {:jenkins_host => "localhost", :jenkins_port => "8080"}
+	set :jenkins_config,  YAML.load_file(File.open('config/jenkins_config.yml'))
 	enable :cross_origin
 end
 
+#Basic route to test connectivity
 get '/' do 
-	return "Cloud Orchestration Jenkins Automation"	
+	return "Corch: Cloud Orchestration Jenkins Automation"	
 end
 
+#handles cross reference requests, needed to communicate with angular frontend
 options "*" do
-  response.headers["Allow"] = "HEAD,GET,PUT,DELETE,OPTIONS"
-
-  # Needed for AngularJS
-  response.headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Cache-Control, Accept"
-
+ 	content_type :json    
+   	headers 'Access-Control-Allow-Origin' => '*', 
+            'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST'] 
 end
 
-#################ROUTES###################
+################# BEGIN ROUTES ######################
 require_relative './routes/git_pull_build/create_post.rb'
 require_relative './routes/jobs/get_all.rb'
+
+
 
 
 

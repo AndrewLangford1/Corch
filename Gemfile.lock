@@ -9,7 +9,7 @@ GEM
     http-cookie (1.0.2)
       domain_name (~> 0.5)
     i18n (0.4.2)
-    json (1.8.3)
+    json_pure (1.8.2)
     mime-types (2.6.1)
     netrc (0.10.3)
     rack (1.6.4)
@@ -51,7 +51,7 @@ PLATFORMS
 
 DEPENDENCIES
   i18n (~> 0.4.1)
-  json
+  json_pure
   rest-client
   rspec
   sinatra

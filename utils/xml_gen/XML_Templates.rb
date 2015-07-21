@@ -1,4 +1,9 @@
+##Hack Class to 'generate' configuration xml for jenkins jobs.
 class XML_Templates
+
+	def initialize params
+		
+	end
 	def self.git_pull_and_build git_url
 		xml = "<project>
 			   	<actions/>

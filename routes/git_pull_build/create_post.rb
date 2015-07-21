@@ -1,9 +1,12 @@
 require 'rest-client'
-require 'json'
+require 'json/pure'
+require 'sinatra/cross_origin'
 
 require_relative '../../utils/xml_gen/XML_Templates.rb'
 require_relative '../../services/jenkins/jenkins_client.rb'
 
+#Route to create a new freestyle project.
+#Pulls code repo from github and builds project.
 post '/create_fs' do
  	#get params from UI
 	params = JSON.parse(request.body.read)
@@ -24,8 +27,7 @@ post '/create_fs' do
 	rescue Exception => e
 		puts e
 		puts e.backtrace
-		return ret.to_json
 	end
-
-	return "#{ret}"
+	
+	return ret.to_json
 end
