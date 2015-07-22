@@ -2,7 +2,7 @@ require 'rest-client'
 require 'json/pure'
 require 'sinatra/cross_origin'
 
-require_relative '../../utils/xml_gen/XML_Templates.rb'
+require_relative '../../utils/XML_Gen.rb'
 require_relative '../../services/jenkins/jenkins_client.rb'
 
 #Route to create a new freestyle project.
@@ -11,10 +11,13 @@ post '/create_fs' do
  	#get params from UI
 	params = JSON.parse(request.body.read)
 	#generate xml from the templates
-	config_xml = XML_Templates.git_pull_and_build(params["git_url"])
+	xml_gen = Utils::XML_Gen.new params
 
+	#config_xml = xml_gen.git_pull_and_build(params["git_url"])
+
+	config_xml = xml_gen.build_config
+	#returnable
 	ret = {:success => false}
-
 	#Begin git pull code and build
 	begin
 		#create jenkins client

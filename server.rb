@@ -13,6 +13,7 @@ get '/' do
 	return "Corch: Cloud Orchestration Jenkins Automation"	
 end
 
+
 #handles cross reference requests, needed to communicate with angular frontend
 options "*" do
  	content_type :json    
@@ -22,7 +23,6 @@ end
 
 ################# BEGIN ROUTES ######################
 require_relative './routes/git_pull_build/create_post.rb'
-require_relative './routes/jobs/get_all.rb'
 
 
 
