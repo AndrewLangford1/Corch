@@ -15,9 +15,14 @@ gem 'json_pure'
 #using thin instead of webrick for the web server.
 gem 'thin'
 
+#using builder to create xml
+gem 'builder'
+
+gem 'activesupport'
+
 # setup our test group and require rspec
 group :test do
-  gem "rspec"
+	gem "rspec"
 end
 
 # require a relative gem version

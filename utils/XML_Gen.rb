@@ -1,7 +1,7 @@
 #Utiities Module
 module Utils
-	##@TODO Redo this class using the Nokogori XML file generator gem.
-	##Hack Class to 'generate' configuration xml for jenkins jobs.
+
+	#class to generate config.xml
 	class XML_Gen
 
 		#@TODO
@@ -55,7 +55,8 @@ module Utils
 			add_pre_triggers
 			add_triggers @template["triggers"]
 			add_concurrent_build
-			add_builders @template["builders"]
+			add_builders
+			add_build_wrappers @template["build_wrappers"]
 			return close_project
 		end
 
@@ -68,8 +69,8 @@ module Utils
 						<properties/>"
 		end
 
-
 		#Adds a source code management to the job configuration(currently only git supported)
+		#currently only pulling from master branch is supported
 		def add_scm git_url
 		@xml << "<scm class= \"hudson.plugins.git.GitSCM\" plugin=\"git@2.4.0\">
 					<configVersion>2</configVersion>
@@ -89,6 +90,7 @@ module Utils
 				</scm>"
 		end
 
+		#@TODO
 		def add_pre_triggers
 			@xml << "	<canRoam>true</canRoam>
 						<disabled>false</disabled>
@@ -96,6 +98,7 @@ module Utils
 						<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>"
 		end
 
+		#@TODO
 		def add_triggers triggers
 			if triggers
 
@@ -104,23 +107,45 @@ module Utils
 			end
 		end
 
+		#@TODO
 		def add_concurrent_build
 			@xml<<"<concurrentBuild>false</concurrentBuild>"
 		end
 
-		def add_builders builders
-			if builders
+		def add_builders
+			@xml << "<builders>"
 
-			else
-				@xml<< "<builders/>"
-			end
+			##add other builders here.
+			docker_builders
+
+			@xml<<"</builders>"
 		end
 
 
+		def docker_builders
+			@xml << "<hudson.tasks.Shell>
+						<command>"
+
+					#pull registry
+			@xml << "docker pull isdockreg101.innovate.ibm.com/ciocld/centos;"
+			@xml << "docker run -v /var/lib/jenkins/jobs/${JOB_NAME}/workspace:/var/app -d isdockreg101.innovate.ibm.com/ciocld/centos echo hello"
+			@xml << 	"</command>
+					</hudson.tasks.Shell>"
+					
+		end
+
+		def add_build_wrappers wrappers 
+			if wrappers
+				#add wrapper logic
+			else
+				@xml<< "<buildWrappers/>"
+			end
+
+		end
+
 		#closes project job and returns the xml
 		def close_project
-			@xml<< 	"<buildWrappers/>
-					 </project>"
+			@xml<< 	"</project>"
 			return @xml
 		end
 	end
