@@ -18,7 +18,6 @@ gem 'thin'
 #using builder to create xml
 gem 'builder'
 
-gem 'activesupport'
 
 # setup our test group and require rspec
 group :test do

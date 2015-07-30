@@ -126,9 +126,15 @@ module Utils
 			@xml << "<hudson.tasks.Shell>
 						<command>"
 
-					#pull registry
-			@xml << "docker pull isdockreg101.innovate.ibm.com/ciocld/centos;"
-			@xml << "docker run -v /var/lib/jenkins/jobs/${JOB_NAME}/workspace:/var/app -d isdockreg101.innovate.ibm.com/ciocld/centos echo hello"
+			#pull registry
+			@xml << "cd /var/lib/jenkins/jobs/#{@template["name"]}/workspace ;"
+			#build image
+			@xml << "docker build -t #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["name"]} . ;"
+			#push image
+			@xml << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["name"]} ;"
+			#run container
+			@xml << "docker run -d -p 4567:4567 #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["name"]} ;"
+			#close
 			@xml << 	"</command>
 					</hudson.tasks.Shell>"
 					

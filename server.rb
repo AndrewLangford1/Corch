@@ -4,6 +4,7 @@ require 'yaml'
 
 #Config settings
 configure do 
+	set :port, 5000
 	set :jenkins_config,  YAML.load_file(File.open('config/jenkins_config.yml'))
 	set :docker_config, YAML.load_file(File.open('config/docker_config.yml'))
 	enable :cross_origin
