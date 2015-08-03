@@ -12,7 +12,7 @@ end
 
 #Basic route to test connectivity
 get '/' do 
-	return "Corch: Cloud Orchestration Jenkins Automation"	
+	return "Corch: Cloud Orchestration Jenkins Automation. Running on #{settings.bind}:#{settings.port}"	
 end
 
 
