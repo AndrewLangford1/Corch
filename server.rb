@@ -5,7 +5,8 @@ require 'yaml'
 
 class Corch < Sinatra::Base
 	#Config settings
-	configure do 
+	configure do
+		$stdout.sync = true
 		set :port, 5000
 		set :jenkins_config,  YAML.load_file(File.open('config/jenkins_config.yml'))
 		set :docker_config, YAML.load_file(File.open('config/docker_config.yml'))
