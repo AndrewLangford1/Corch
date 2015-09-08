@@ -18,8 +18,9 @@ gem 'thin'
 #using builder to create xml
 gem 'builder'
 
-gem 'foreman'
+gem 'rack'
 
+gem 'rake'
 
 # setup our test group and require rspec
 group :test do

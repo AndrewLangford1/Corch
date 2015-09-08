@@ -49,6 +49,7 @@ module Jenkins
 				ret[:job] = RestClient.get "#{@jenkins_host}:#{@jenkins_port}/job/#{name}/config.xml"
 				ret[:success] = true
 			rescue Exception => e
+				puts e
 				puts "Job #{name} Doesn't Exist"
 			end
 			return ret

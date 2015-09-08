@@ -1,16 +1,18 @@
-FROM base
-MAINTAINER tcnksm "https://github.com/aslangfo"
+FROM ubuntu:trusty
+MAINTAINER tcnksm "https://github.com/aslangfo" (https://github.com/aslangfo%27) 
 # Install packages for building ruby
 RUN apt-get update
 RUN apt-get install -y --force-yes build-essential wget git
 RUN apt-get install -y --force-yes zlib1g-dev libssl-dev libreadline-dev libyaml-dev libxml2-dev libxslt-dev
 RUN apt-get clean
-RUN wget -P /root/src http://cache.ruby-lang.org/pub/ruby/2.2/ruby-2.2.2.tar.gz
-RUN cd /root/src; tar xvf ruby-2.2.2.tar.gz
-RUN cd /root/src/ruby-2.2.2; ./configure; make install
-RUN gem update --system
+
+RUN apt-get install ruby-dev -y
+
+RUN gem update
 RUN gem install bundler
-RUN git clone https://github.com/aslangfo/Corch /root/sinatra
-RUN cd /root/sinatra; bundle install
-EXPOSE 4567
-CMD ["/usr/local/bin/foreman","start","-d","/root/sinatra"]
+
+ADD . /root/sinatra
+WORKDIR /root/sinatra
+RUN ls; bundle install
+EXPOSE 5000
+CMD ["rake","run","/root/sinatra"]
