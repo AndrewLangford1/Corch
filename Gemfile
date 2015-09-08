@@ -15,12 +15,13 @@ gem 'json_pure'
 #using thin instead of webrick for the web server.
 gem 'thin'
 
-#using builder to create xml
-gem 'builder'
-
 gem 'rack'
 
 gem 'rake'
+
+gem 'nokogiri'
+
+
 
 # setup our test group and require rspec
 group :test do

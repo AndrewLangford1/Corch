@@ -18,7 +18,7 @@ post '/create_fs' do
 	config_params = {"docker_params" => settings.docker_config}.merge request_params
 	#generate xml from the templates
 	xml_gen = Utils::XML_Gen.new config_params
-	config_xml = xml_gen.build_config 
+	config_xml = xml_gen.build_config
 	#returnable
 	ret = {:success => false}
 	#Begin git pull code and build
