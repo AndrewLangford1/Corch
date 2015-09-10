@@ -4,6 +4,7 @@ require 'sinatra/cross_origin'
 
 require_relative '../../utils/XML_Gen.rb'
 require_relative '../../services/jenkins/jenkins_client.rb'
+require_relative '../../services/docker/docker.rb'
 
 #@TODO fix the configuration for this, shouldnt have two seperate configurations and shouldnt have to merge
 
@@ -15,7 +16,10 @@ post '/create_fs' do
 
 	puts "#{request_params}"
 	#docker configuration params, SHOULDNT HAVE TO MERGE THIS HASH FIND A BETTER WAY
-	config_params = {"docker_params" => settings.docker_config}.merge request_params
+	config_params = {"docker_params" => settings.docker_config, "jenkins_params" => settings.jenkins_config}.merge request_params
+	dockerfile = (Docker::File.new(config_params)).generate_file
+	config_params = config_params.merge({"dockerfile" => dockerfile})
+	puts "#{config_params}"
 	#generate xml from the templates
 	xml_gen = Utils::XML_Gen.new config_params
 	config_xml = xml_gen.build_config

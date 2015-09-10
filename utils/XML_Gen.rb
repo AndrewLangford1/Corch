@@ -9,17 +9,13 @@ module Utils
 		end
 		#Generates Jenkins config
 		def build_config
+			#Awkward xml tags with dots in them that ruby doesn't like:
 			hudson_git_plugin = "hudson.plugins.git.UserRemoteConfig"
 			hudson_branches = "hudson.plugins.git.BranchSpec"
 			hudson_tasks = "hudson.tasks.Shell"
-
-			docker_commands = "cd /var/lib/jenkins/jobs/#{@template["name"]}/workspace ;"
-			#build image
-			docker_commands << "docker build -t #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["name"]} . ;"
-			#push image
-			docker_commands << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["name"]} ;"
-			#run container
-			docker_commands << "docker run -d -p 4567:4567 #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["name"]} ;"
+			#Docker commands we want to run as build steps:
+			docker_commands = generate_docker_commands
+		
 			@project = Nokogiri::XML::Builder.new do |xml|
 				xml.project{
 					xml.actions{
@@ -64,6 +60,18 @@ module Utils
 				}
 			end
 			return @project.to_xml
+		end
+
+		def generate_docker_commands
+			jenkins_ep = "/#{@template["jenkins_params"]["jenkins_home"]}/jobs/#{@template["name"]}/workspace"
+			docker_commands = "cd /var/lib/jenkins/jobs/#{@template["name"]}/workspace;"
+			docker_commands << "rm -rf Dockerfile;"
+			docker_commands << "touch Dockerfile;"
+			docker_commands << "echo \'#{@template["dockerfile"]}\' >> Dockerfile;"
+			docker_commands << "docker build -t #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} . ;"
+			#docker_commands << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}/#{@template["name"]} ;"
+			docker_commands << "docker run -d -p #{@template["port"]}:#{@template["port"]} #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} ;"
+			return docker_commands
 		end
 	end
 end

@@ -37,24 +37,26 @@ module Jenkins
 				return "500"
 			end
 		end
-
 		#pull specified job config.xml
 		#@param name, the name of the job 
 		#@return success status, and job config.xml (if successful)
 		def get_job name
 			puts "pulling config.xml for job #{name}"
 			ret = {}
-			ret[:success] = false
 			begin
-				ret[:job] = RestClient.get "#{@jenkins_host}:#{@jenkins_port}/job/#{name}/config.xml"
-				ret[:success] = true
+				response = RestClient.get "#{@jenkins_host}:#{@jenkins_port}/job/#{name}/config.xml"
+				if response.code == 200
+					ret[:success] = true
+					ret[:job] = response.body
+				else
+					raise 'Job does not exist'
+				end
 			rescue Exception => e
 				puts e
-				puts "Job #{name} Doesn't Exist"
+				ret[:success] = false
 			end
 			return ret
 		end
-
 		#Tests whether or not the specified job exists
 		#@param name the job name
 		#@returns true if job exists, false otherwise
@@ -62,7 +64,6 @@ module Jenkins
 			job = get_job name
 			return job[:success]
 		end
-
 		#delete the specified job
 		#@param name the job name
 		#@returns true if the job successfully deleted, false otherwise
