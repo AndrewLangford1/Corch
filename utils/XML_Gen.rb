@@ -67,14 +67,13 @@ module Utils
 				return nil
 			end
 		end
-
 		def generate_docker_commands
 			docker_commands = "cd /var/lib/jenkins/jobs/#{@template["name"]}/workspace;"
 			docker_commands << "rm -rf Dockerfile;"
 			docker_commands << "touch Dockerfile;"
 			docker_commands << "echo \'#{@template["dockerfile"]}\' >> Dockerfile;"
 			docker_commands << "docker build -t #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} . ;"
-			#docker_commands << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}/#{@template["name"]} ;"
+			#docker_commands << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} ;"
 			docker_commands << "docker run -d -p #{@template["port"]}:#{@template["port"]} #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} ;"
 			return docker_commands
 		end
