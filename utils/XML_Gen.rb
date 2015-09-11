@@ -13,57 +13,62 @@ module Utils
 			hudson_git_plugin = "hudson.plugins.git.UserRemoteConfig"
 			hudson_branches = "hudson.plugins.git.BranchSpec"
 			hudson_tasks = "hudson.tasks.Shell"
-			#Docker commands we want to run as build steps:
-			docker_commands = generate_docker_commands
-		
-			@project = Nokogiri::XML::Builder.new do |xml|
-				xml.project{
-					xml.actions{
-					}
-					xml.description{
-					}
-					xml.keepDependencies false
-					xml.properties{
-					}
-					xml.scm(:class => "hudson.plugins.git.GitSCM", :plugin => "git@2.4.0"){
-						xml.configVersion 2
-						xml.userRemoteConfigs{
-							xml.send(:"#{hudson_git_plugin}"){
-								xml.url @template["git_url"]
+			begin
+				#Docker commands we want to run as build steps:
+				docker_commands = generate_docker_commands
+			
+				@project = Nokogiri::XML::Builder.new do |xml|
+					xml.project{
+						xml.actions{
+						}
+						xml.description{
+						}
+						xml.keepDependencies false
+						xml.properties{
+						}
+						xml.scm(:class => "hudson.plugins.git.GitSCM", :plugin => "git@2.4.0"){
+							xml.configVersion 2
+							xml.userRemoteConfigs{
+								xml.send(:"#{hudson_git_plugin}"){
+									xml.url @template["git_url"]
+								}
+							}
+							xml.branches{
+								xml.send(:"#{hudson_branches}"){
+									xml.name "*/master"
+								}
+							}
+							xml.doGenerateSubmoduleConfigurations false
+							xml.submoduleCfg(:class => "list"){
+							}
+							xml.extensions{
 							}
 						}
-						xml.branches{
-							xml.send(:"#{hudson_branches}"){
-								xml.name "*/master"
+						xml.canRoam true
+						xml.disabled false
+						xml.blockBuildWhenDownstreamBuilding false
+						xml.blockBuildWhenUpstreamBuilding false
+						xml.triggers{
+						}
+						xml.concurrentBuild false
+						xml.builders{
+							xml.send(:"#{hudson_tasks}"){
+								xml.command docker_commands
 							}
 						}
-						xml.doGenerateSubmoduleConfigurations false
-						xml.submoduleCfg(:class => "list"){
-						}
-						xml.extensions{
+						xml.buildWrappers{
 						}
 					}
-					xml.canRoam true
-					xml.disabled false
-					xml.blockBuildWhenDownstreamBuilding false
-					xml.blockBuildWhenUpstreamBuilding false
-					xml.triggers{
-					}
-					xml.concurrentBuild false
-					xml.builders{
-						xml.send(:"#{hudson_tasks}"){
-							xml.command docker_commands
-						}
-					}
-					xml.buildWrappers{
-					}
-				}
+				end
+				return @project.to_xml
+			rescue Exception => e 
+				puts e
+				puts e.backtrace
+				return nil
 			end
-			return @project.to_xml
 		end
 
 		def generate_docker_commands
-			jenkins_ep = "/#{@template["jenkins_params"]["jenkins_home"]}/jobs/#{@template["name"]}/workspace"
 			docker_commands = "cd /var/lib/jenkins/jobs/#{@template["name"]}/workspace;"
 			docker_commands << "rm -rf Dockerfile;"
 			docker_commands << "touch Dockerfile;"
