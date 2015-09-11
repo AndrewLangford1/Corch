@@ -1,6 +1,5 @@
 require 'rest-client'
 require 'json'
-#require 'active_support'
 #Module concerning the Jenkins Service
 module Jenkins
 	#Class to interact with the jenkins api
