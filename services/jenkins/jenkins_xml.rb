@@ -1,14 +1,15 @@
 #Utiities Module
 require 'nokogiri'
-module Utils
+module Jenkins
 	#class to generate config.xml
-	class XML_Gen
+	class Jenkins_XML_Gen
 		#base constructor
 		def initialize params
 			@template = params
 		end
 		#Generates Jenkins config
 		def build_config
+			puts "==> Generating Jenkins job configuration xml"
 			#Awkward xml tags with dots in them that ruby doesn't like:
 			hudson_git_plugin = "hudson.plugins.git.UserRemoteConfig"
 			hudson_branches = "hudson.plugins.git.BranchSpec"
@@ -68,9 +69,13 @@ module Utils
 			end
 		end
 		def generate_docker_commands
-			docker_commands = "cd /var/lib/jenkins/jobs/#{@template["name"]}/workspace;"
+			current_directory = "#{@template["jenkins_params"]["jenkins_home"]}/jobs/#{@template["name"]}/workspace"
+			docker_commands =  "cd #{current_directory};"
 			docker_commands << "rm -rf Dockerfile;"
 			docker_commands << "touch Dockerfile;"
+			docker_commands << "rm -rf #{@template["name"]}.yml ;"
+			docker_commands << "touch #{@template["name"]}.yml ;"
+			docker_commands << "echo \'#{@template["kubernetes_yaml"]}\' >> #{@template["name"]}.yml ;"
 			docker_commands << "echo \'#{@template["dockerfile"]}\' >> Dockerfile;"
 			docker_commands << "docker build -t #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} . ;"
 			#docker_commands << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} ;"

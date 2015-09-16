@@ -5,6 +5,7 @@ module Docker
 			@template = params
 		end
 		def generate_file
+			puts "==> Generating Dockerfile for this project"
 			begin
 				@dockerfile = Tempfile.new "Dockerfile"
 				##BUILD DOCKERFILE

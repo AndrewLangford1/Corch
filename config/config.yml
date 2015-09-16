@@ -1,0 +1,10 @@
+jenkins_params:
+  jenkins_host: "127.0.0.1"
+  jenkins_port: 8080
+  jenkins_home: /var/lib/jenkins
+docker_params:
+  registry: isdockreg101.innovate.ibm.com
+kubernetes:
+  server: iskubermaster01.innovate.ibm.com
+  api: v1beta1
+  kind: Pod

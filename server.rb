@@ -6,8 +6,7 @@ require 'yaml'
 configure do
 	$stdout.sync = true
 	set :port, 5000
-	set :jenkins_config,  YAML.load_file(File.open('config/jenkins_config.yml'))
-	set :docker_config, YAML.load_file(File.open('config/docker_config.yml'))
+	set :config,  YAML.load_file(File.open('config/config.yml'))
 	enable :cross_origin
 end
 #Basic route to test connectivity
@@ -21,4 +20,4 @@ options "*" do
 		'Access-Control-Allow-Methods' => ['OPTIONS', 'GET', 'POST'] 
 end
 ################# BEGIN ROUTES ######################
-require_relative './routes/git_pull_build/create_post.rb'
+require_relative './routes/post.rb'
