@@ -70,6 +70,7 @@ module Jenkins
 		end
 		def generate_docker_commands
 			current_directory = "#{@template["jenkins_params"]["jenkins_home"]}/jobs/#{@template["name"]}/workspace"
+			image = "#{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]}"
 			docker_commands =  "cd #{current_directory};"
 			docker_commands << "rm -rf Dockerfile;"
 			docker_commands << "touch Dockerfile;"
@@ -77,9 +78,9 @@ module Jenkins
 			docker_commands << "touch #{@template["name"]}.yml ;"
 			docker_commands << "echo \'#{@template["kubernetes_yaml"]}\' >> #{@template["name"]}.yml ;"
 			docker_commands << "echo \'#{@template["dockerfile"]}\' >> Dockerfile;"
-			docker_commands << "docker build -t #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} . ;"
-			#docker_commands << "docker push #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} ;"
-			docker_commands << "docker run -d -p #{@template["port"]}:#{@template["port"]} #{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]} ;"
+			docker_commands << "docker build -t #{image} . ;"
+			docker_commands << "docker push #{image} ;"
+			docker_commands << "docker run -d -p #{@template["port"]}:#{@template["port"]} #{image} ;"
 			return docker_commands
 		end
 	end
