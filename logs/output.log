@@ -1,0 +1,17 @@
+Thin web server (v1.6.3 codename Protein Powder)
+Maximum connections set to 1024
+Listening on 0.0.0.0:5000, CTRL+C to stop
+==> Creating freestyle project
+==> Generating Dockerfile for this project
+==> Generating yaml configuriation for Pod
+{"apiVersion"=>"v1", "kind"=>"Pod", "metadata"=>{"name"=>"testingddwfwf", "labels"=>{"role"=>"testingddwfwf"}}, "spec"=>{"containers"=>{"name"=>"testingddwfwf", "image"=>"isdockreg101.innovate.ibm.com/ubuntu/ruby_testingddwfwf", "ports"=>{"name"=>"testingddwfwf", "containerPort"=>5001}, "securityContext"=>{"privileged"=>true}}}}
+==> Generating yaml confiuration for Service
+{"kind"=>"Service", "apiVersion"=>"v1", "metadata"=>{"name"=>"testingddwfwf", "labels"=>{"name"=>"testingddwfwf"}, "annotations"=>{"kubernetesReverseproxy"=>"{\"hosts\": [{\"host\": \"testingddwfwf.default.ciohcld.innovate.ibm.com\", \"port\": \"80\", \"path\": [\"/testingddwfwf\"], \"defaultPath\": \"testingddwfwf\"}]}"}}, "spec"=>{"ports"=>{"port"=>5001}, "selector"=>{"role"=>"testingddwfwf"}}}
+==> Generating Jenkins job configuration xml
+==> Initializing Jenkins Client at 127.0.0.1:8080
+==> Pulling config.xml for job: 'testingddwfwf'
+==> Deleting job: 'testingddwfwf'
+==> Creating job for project: 'testingddwfwf'
+==> Building job for project: 'testingddwfwf'
+10.0.2.2 - - [24/Sep/2015:20:49:22 +0000] "POST /create_fs HTTP/1.1" 200 59 0.1351
+Stopping ...

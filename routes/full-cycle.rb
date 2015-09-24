@@ -5,12 +5,14 @@ require_relative '../services/jenkins/jenkins_client.rb'
 require_relative '../services/jenkins/jenkins_xml.rb'
 require_relative '../services/kubernetes/kubernetes_yml_gen.rb'
 require_relative '../services/docker/docker.rb'
-#Route to create a new freestyle project.
+#Route to create a new freestyle project. This is the full cycle build route
 post '/create_fs' do
 	begin
 		puts "==> Creating freestyle project"
 	 	#job configuration hash
 		config_params = (settings.config).merge!(JSON.parse(request.body.read))
+		#remove all non alpha-numeric or _ - characters from the name as well as any whitespace
+		config_params["name"] = config_params["name"].downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
 		#raise error if there are runtimes we dont support yet
 		raise "Currently only Ruby and Nodejs runtimes are supported" if (config_params["runtime"] == "liberty" || config_params["runtime"] == "python")
 		#generate dockerfile
@@ -18,13 +20,13 @@ post '/create_fs' do
 		#if dockerfile wasn't generated, raise an error
 		raise "Dockerfile couldn't be generated for this project" if dockerfile.nil?
 		#add dockerfile to job configuration hash
-		config_params.merge!({"dockerfile" => dockerfile})
+		config_params["dockerfile"] = dockerfile
 		#build kubernetes yaml file to push to POD
-		kubernetes_yaml = (Kubernetes::Kubernetes_YML_Gen.new config_params).build_config
+		kubernetes_yaml = (Kubernetes::Kubernetes_YML_Gen.new config_params).build_kubernetes_config
 		#if configuration failed, raise error
 		raise "Kubernetes Yaml configuration couldn't be generated for this project" if kubernetes_yaml.nil?
 		#add kubernetes to configuration hash
-		config_params.merge!({"kubernetes_yaml" => kubernetes_yaml})
+		config_params["kubernetes_yaml"] = kubernetes_yaml
 		#generate xml from the templates
 		config_xml = (Jenkins::Jenkins_XML_Gen.new config_params).build_config
 		#if configuration failed, raise error
@@ -41,7 +43,9 @@ post '/create_fs' do
 			   :build_code => (jenkins.build_job config_params["name"]),
 			   :success => true
 			  }
+		#if no errors occur, return the build codes and success true
 		return ret.to_json
+	#log and return error to the UI
 	rescue Exception => e
 		puts "==> #{e}"
 		puts e.backtrace

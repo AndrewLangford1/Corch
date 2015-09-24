@@ -68,19 +68,27 @@ module Jenkins
 				return nil
 			end
 		end
+
+		#BUILD STEPS
+		#1: Pull code from Github Repository
+		#2: Build new Docker image for the application
+		#3: Push new image to private docker registry
+		#4: Pull yaml files(s) and execute them 
+		#5: (optional: maintenance; update for the app)
 		def generate_docker_commands
 			current_directory = "#{@template["jenkins_params"]["jenkins_home"]}/jobs/#{@template["name"]}/workspace"
 			image = "#{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]}"
-			docker_commands =  "cd #{current_directory};"
-			docker_commands << "rm -rf Dockerfile;"
-			docker_commands << "touch Dockerfile;"
-			docker_commands << "rm -rf #{@template["name"]}.yml ;"
-			docker_commands << "touch #{@template["name"]}.yml ;"
-			docker_commands << "echo \'#{@template["kubernetes_yaml"]}\' >> #{@template["name"]}.yml ;"
-			docker_commands << "echo \'#{@template["dockerfile"]}\' >> Dockerfile;"
-			docker_commands << "docker build -t #{image} . ;"
-			docker_commands << "docker push #{image} ;"
-			docker_commands << "docker run -d -p #{@template["port"]}:#{@template["port"]} #{image} ;"
+			docker_commands = <<-BUILDSCRIPT 
+			cd #{current_directory};
+			rm -rf Dockerfile;
+			touch Dockerfile;
+			rm -rf #{@template["name"]}.yml ;
+			touch #{@template["name"]}.yml ;
+			echo \'#{@template["kubernetes_yaml"]}\' >> #{@template["name"]}.yml ;
+			echo \'#{@template["dockerfile"]}\' >> Dockerfile;
+			docker build -t #{image} . ;
+			docker run -d -p #{@template["port"]}:#{@template["port"]} #{image} ;
+			BUILDSCRIPT
 			return docker_commands
 		end
 	end

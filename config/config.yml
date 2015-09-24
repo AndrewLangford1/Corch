@@ -6,5 +6,7 @@ docker_params:
   registry: isdockreg101.innovate.ibm.com
 kubernetes:
   server: iskubermaster01.innovate.ibm.com
-  api: v1beta1
-  kind: Pod
+  api: v1
+  kind:
+    service: Service
+    pod: Pod

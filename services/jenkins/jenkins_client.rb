@@ -51,7 +51,6 @@ module Jenkins
 					raise '==> Job does not exist'
 				end
 			rescue Exception => e
-				puts e
 				ret[:success] = false
 			end
 			return ret
