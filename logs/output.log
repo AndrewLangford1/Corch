@@ -1,17 +1,47 @@
 Thin web server (v1.6.3 codename Protein Powder)
 Maximum connections set to 1024
 Listening on 0.0.0.0:5000, CTRL+C to stop
+10.0.2.2 - - [28/Sep/2015:14:25:42 +0000] "OPTIONS /create_fs HTTP/1.1" 200 - 0.0123
 ==> Creating freestyle project
+{"git_url"=>"https://github.com/AndrewLangford1/rake-hello.git", "name"=>"kubtst", "base_image"=>"ubuntu", "runtime"=>"ruby", "exec_file"=>"server.rb", "port"=>"5001", "buildSteps"=>{"pullcode"=>false, "makecontainer"=>false, "buildimage"=>false, "deploy"=>false}}
 ==> Generating Dockerfile for this project
-==> Generating yaml configuriation for Pod
-{"apiVersion"=>"v1", "kind"=>"Pod", "metadata"=>{"name"=>"testingddwfwf", "labels"=>{"role"=>"testingddwfwf"}}, "spec"=>{"containers"=>{"name"=>"testingddwfwf", "image"=>"isdockreg101.innovate.ibm.com/ubuntu/ruby_testingddwfwf", "ports"=>{"name"=>"testingddwfwf", "containerPort"=>5001}, "securityContext"=>{"privileged"=>true}}}}
-==> Generating yaml confiuration for Service
-{"kind"=>"Service", "apiVersion"=>"v1", "metadata"=>{"name"=>"testingddwfwf", "labels"=>{"name"=>"testingddwfwf"}, "annotations"=>{"kubernetesReverseproxy"=>"{\"hosts\": [{\"host\": \"testingddwfwf.default.ciohcld.innovate.ibm.com\", \"port\": \"80\", \"path\": [\"/testingddwfwf\"], \"defaultPath\": \"testingddwfwf\"}]}"}}, "spec"=>{"ports"=>{"port"=>5001}, "selector"=>{"role"=>"testingddwfwf"}}}
+==> Generating yaml configuration for kubtst-pod
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kubtst
+  labels:
+    role: kubtst
+spec:
+  containers:
+  - name: kubtst
+  image: isdockreg101.innovate.ibm.com/ubuntu/ruby_kubtst
+  ports:
+  - name: kubtst
+  containerPort: 5001
+  securityContext:
+    privileged: true
+==> Generating yaml configuration for kubtst-service
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubtst
+  labels:
+    name: kubtst
+  annotations:
+    kubernetesReverseproxy: '"{"hosts": [{"host": "kubtst.default.ciohcld.innovate.ibm.com",
+      "port": "80", "path": ["/kubtst"], "defaultPath": "kubtst"}]}"'
+spec:
+  ports:
+  - port: 5001
+  selector:
+    role: kubtst
 ==> Generating Jenkins job configuration xml
 ==> Initializing Jenkins Client at 127.0.0.1:8080
-==> Pulling config.xml for job: 'testingddwfwf'
-==> Deleting job: 'testingddwfwf'
-==> Creating job for project: 'testingddwfwf'
-==> Building job for project: 'testingddwfwf'
-10.0.2.2 - - [24/Sep/2015:20:49:22 +0000] "POST /create_fs HTTP/1.1" 200 59 0.1351
+==> Pulling config.xml for job: 'kubtst'
+==> Creating job for project: 'kubtst'
+==> Building job for project: 'kubtst'
+10.0.2.2 - - [28/Sep/2015:14:25:42 +0000] "POST /create_fs HTTP/1.1" 200 59 0.3576
 Stopping ...

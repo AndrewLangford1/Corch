@@ -11,12 +11,12 @@ configure do
 	enable :cross_origin
 
 	#Configure Logging
-	Dir.mkdir('logs') unless File.exist?('logs')
-    $logger = Logger.new('logs/common.log','weekly')
-    $logger.level = Logger::WARN
-    $stdout.reopen("logs/output.log", "w")
-    $stdout.sync = true
-    $stderr.reopen($stdout)
+	#Dir.mkdir('logs') unless File.exist?('logs')
+    #$logger = Logger.new('logs/common.log','weekly')
+    #$logger.level = Logger::WARN
+    #$stdout.reopen("logs/output.log", "w")
+    #$stdout.sync = true
+    #$stderr.reopen($stdout)
 end
 #Basic route to test connectivity
 get '/' do 

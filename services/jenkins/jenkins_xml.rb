@@ -14,10 +14,7 @@ module Jenkins
 			hudson_git_plugin = "hudson.plugins.git.UserRemoteConfig"
 			hudson_branches = "hudson.plugins.git.BranchSpec"
 			hudson_tasks = "hudson.tasks.Shell"
-			begin
-				#Docker commands we want to run as build steps:
-				docker_commands = generate_docker_commands
-			
+			begin			
 				@project = Nokogiri::XML::Builder.new do |xml|
 					xml.project{
 						xml.actions{
@@ -54,7 +51,7 @@ module Jenkins
 						xml.concurrentBuild false
 						xml.builders{
 							xml.send(:"#{hudson_tasks}"){
-								xml.command docker_commands
+								xml.command generate_build_shell_execution
 							}
 						}
 						xml.buildWrappers{
@@ -75,21 +72,32 @@ module Jenkins
 		#3: Push new image to private docker registry
 		#4: Pull yaml files(s) and execute them 
 		#5: (optional: maintenance; update for the app)
-		def generate_docker_commands
+		def generate_build_shell_execution
+			#current directory in the workspace
 			current_directory = "#{@template["jenkins_params"]["jenkins_home"]}/jobs/#{@template["name"]}/workspace"
+			#docker image
 			image = "#{@template["docker_params"]["registry"]}/#{@template["base_image"]}/#{@template["runtime"]}_#{@template["name"]}"
-			docker_commands = <<-BUILDSCRIPT 
+			#kubernetes yaml
+			pod_yaml = "#{@template["name"]}-pod.yml"
+			service_yaml = "#{@template["name"]}-service.yml"
+			#generate bash script for build execution
+			bash_script = <<-BASH 
 			cd #{current_directory};
 			rm -rf Dockerfile;
 			touch Dockerfile;
-			rm -rf #{@template["name"]}.yml ;
-			touch #{@template["name"]}.yml ;
-			echo \'#{@template["kubernetes_yaml"]}\' >> #{@template["name"]}.yml ;
 			echo \'#{@template["dockerfile"]}\' >> Dockerfile;
+			rm -rf #{@template["name"]}-pod.yml ;
+			touch #{@template["name"]}-pod.yml ;
+			echo '#{@template["kubernetes_yaml"]["pod"]}' >> #{@template["name"]}-pod.yml ;
+			rm -rf #{@template["name"]}-service.yml ;
+			touch #{@template["name"]}-service.yml ;
+			echo "#{@template["kubernetes_yaml"]["service"]}" >> #{@template["name"]}-service.yml;
 			docker build -t #{image} . ;
-			docker run -d -p #{@template["port"]}:#{@template["port"]} #{image} ;
-			BUILDSCRIPT
-			return docker_commands
+			docker push #{image} ;
+			kubectl -s #{@template["kubernetes"]["server"]}:#{@template["kubernetes"]["port"]} create -f #{pod_yaml} ;
+			kubectl -s #{@template["kubernetes"]["server"]}:#{@template["kubernetes"]["port"]} create -f #{service_yaml} ;
+			BASH
+			return bash_script
 		end
 	end
 end

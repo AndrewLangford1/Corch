@@ -9,8 +9,10 @@ require_relative '../services/docker/docker.rb'
 post '/create_fs' do
 	begin
 		puts "==> Creating freestyle project"
+		post_params = JSON.parse(request.body.read)
+		puts "#{post_params}"
 	 	#job configuration hash
-		config_params = (settings.config).merge!(JSON.parse(request.body.read))
+		config_params = (settings.config).merge!(post_params)
 		#remove all non alpha-numeric or _ - characters from the name as well as any whitespace
 		config_params["name"] = config_params["name"].downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
 		#raise error if there are runtimes we dont support yet
