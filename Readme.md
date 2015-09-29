@@ -9,8 +9,11 @@
 6. Run: rake run
 7. point your browser to {hostname}:5000
 8. check out /routes folder for usage of this api. should be used with the UI found at https://github.ibm.com/aavetis/CloudOrchUI
+
+
 ##Docker
 ### This application is packaged with a dockerfile that will also build and run the app inside an ubuntu container.
+
 ##Jenkins/Docker/Kubectl server
 ###pieces needed:
 1. A server with jenkins installed. Currently no form of authentication on this server is supported.
